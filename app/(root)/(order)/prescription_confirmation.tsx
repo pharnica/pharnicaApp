@@ -21,11 +21,12 @@ import { Image } from "expo-image";
 import { router } from "expo-router";
 import CustomButton from "@/components/CustomButton";
 import tw from "twrnc";
+import usePrescriptionStore from "@/store/prescriptionStore";
 
 const PrescriptionConfirmation = () => {
   
   const navigation = useNavigation();
-  const { prescriptions, popPrescriptions, currentPrescIndex } = useOrderStore();
+  const { prescriptions, popPrescriptions, currentPrescIndex } = usePrescriptionStore();
 
   const backAction = useCallback(() => {
     Alert.alert(
@@ -58,7 +59,7 @@ const PrescriptionConfirmation = () => {
 
   
   return (
-    <SafeAreaView className="flex-1 w-full bg-gray-100 p-4">
+    <View className="flex-1 w-full bg-gray-100 p-4">
       <StatusBar
         animated
         backgroundColor="rgb(243 244 246)"
@@ -95,9 +96,9 @@ const PrescriptionConfirmation = () => {
 
             <TouchableHighlight
               className="w-14 h-14 bg-black/30 rounded-full absolute bottom-5 right-4 items-center justify-center"
-              onPress={() => {
-                router.navigate("/(root)/(order)/prescription_editing");
-              }}
+              // onPress={() => {
+              //   router.navigate("/(root)/(order)/prescription_editing");
+              // }}
             >
               <PencilIcon size={24} color="white" />
             </TouchableHighlight>
@@ -125,7 +126,7 @@ const PrescriptionConfirmation = () => {
       ) : (
         <Text className="text-gray-500 text-lg">No prescriptions</Text>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

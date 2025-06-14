@@ -171,7 +171,7 @@ const ProfileDetails = () => {
 
     
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <View className="flex-1 pt-2 bg-white">
       <StatusBar
         animated
         backgroundColor="rgb(243 244 246)"
@@ -339,7 +339,7 @@ const ProfileDetails = () => {
         maximumDate={new Date()}
         display="spinner"
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -27,13 +27,13 @@ import magicStick from "@/assets/icons/magicWand.png";
 import magicStickActive from "@/assets/icons/magic.png";
 import idCard from "@/assets/icons/idCard.png";
 import locationMap from "@/assets/icons/location.png";
+import pinmap from "@/assets/icons/pinmap.png";
 
 import inactivePharmacy from "@/assets/icons/inactivePharmacy.png";
 import SelectedPharmacy from "@/assets/icons/SelectedPharmacy.png";
 import activePharmacy from "@/assets/icons/activePharmacy.png";
 import pendingPharmacy from "@/assets/icons/PendingPharmacy.png";
 import rejectedPharmacy from "@/assets/icons/rejectedPharmacy.png";
-
 
 import GPS from "@/assets/icons/GPS.png";
 import priceConfirmation from "@/assets/images/Frame 60545.png";
@@ -46,7 +46,23 @@ import aid from "@/assets/images/first-aid-kit.png";
 import baby from "@/assets/images/baby.png";
 import care from "@/assets/images/face-mask.png";
 import adults from "@/assets/images/sex.png";
-import { CheckCircleIcon, CubeIcon, CurrencyDollarIcon, ShieldCheckIcon, TruckIcon } from "react-native-heroicons/outline";
+import {
+  CheckCircleIcon,
+  CubeIcon,
+  CurrencyDollarIcon,
+  ShieldCheckIcon,
+  TruckIcon,
+} from "react-native-heroicons/outline";
+
+
+import shipping from "@/assets/lottie/CourierLottie.json"
+import packaging from "@/assets/lottie/Packaging.json"
+import calculating from "@/assets/lottie/Calculating.json"
+import validating from "@/assets/lottie/Validating.json"
+import delivered from "@/assets/lottie/Delivered.json"
+import rejected from "@/assets/lottie/Rejected.json"
+import accepted from "@/assets/lottie/Accepted.json"
+import cancelled from "@/assets/lottie/Cancelled.json"
 
 export const images = {
   onboarding1,
@@ -69,7 +85,6 @@ export const images = {
 };
 
 export const icons = {
-
   home,
   hospital,
   Activehome,
@@ -95,54 +110,66 @@ export const icons = {
   SelectedPharmacy,
   activePharmacy,
   pendingPharmacy,
-rejectedPharmacy,
+  rejectedPharmacy,
   GPS,
+  pinmap,
 };
 
+export const lotties = {
+shipping,
+packaging,
+calculating,
+validating,
+delivered,
+rejected,
+accepted,
+cancelled
+}
+
 export const processStages = [
-    {
-      id: "VALIDATING",
-      title: "Order Validating",
-      description:
-        "The pharmacy has received your order and is currently being processed",
-      icon: ShieldCheckIcon,
-    },
-    {
-      id: "PRICE_CALCULATING",
-      title: "Total Price Calculating",
-      description: "The pharmacy is calculating the total price",
-      icon: CurrencyDollarIcon,
-    },
-    {
-      id: "PREPARING",
-      title: "Packaging . . .",
-      description: "Your items are being carefully packed",
-      icon: CubeIcon,
-    },
-    {
-      id: "SHIPPING",
-      title: "Shipped",
-      description: "Your package is on its way to you",
-      icon: TruckIcon,
-    },
-    {
-      id: "DELIVERED",
-      title: "Delivered",
-      description: "Your order has been successfully delivered",
-      icon: CheckCircleIcon,
-    },
-  ];
+  {
+    id: "VALIDATING",
+    title: "Order Validating",
+    description:
+      "The pharmacy has received your order and is currently being processed",
+    icon: ShieldCheckIcon,
+  },
+  {
+    id: "PRICE_CALCULATING",
+    title: "Total Price Calculating",
+    description: "The pharmacy is calculating the total price",
+    icon: CurrencyDollarIcon,
+  },
+  {
+    id: "PREPARING",
+    title: "Packaging . . .",
+    description: "Your items are being carefully packed",
+    icon: CubeIcon,
+  },
+  {
+    id: "SHIPPING",
+    title: "Shipped",
+    description: "Your package is on its way to you",
+    icon: TruckIcon,
+  },
+  {
+    id: "DELIVERED",
+    title: "Delivered",
+    description: "Your order has been successfully delivered",
+    icon: CheckCircleIcon,
+  },
+];
 
 const categories = [
-    { title: "Pain &\nFever", from: images.fever },
-    { title: "Digestive\nHealth", from: images.digestive },
-    { title: "Vitamins &\npain killers", from: images.drugs },
-    { title: "Women's\nHealth", from: images.pregnant },
-    { title: "First aid\nsupplies", from: images.aid },
-    { title: "Babies\ngear", from: images.baby },
-    { title: "Personal\nCare", from: images.care },
-    { title: "Sexual\nhealth", from: images.adults },
-  ];
+  { title: "Pain &\nFever", from: images.fever },
+  { title: "Digestive\nHealth", from: images.digestive },
+  { title: "Vitamins &\npain killers", from: images.drugs },
+  { title: "Women's\nHealth", from: images.pregnant },
+  { title: "First aid\nsupplies", from: images.aid },
+  { title: "Babies\ngear", from: images.baby },
+  { title: "Personal\nCare", from: images.care },
+  { title: "Sexual\nhealth", from: images.adults },
+];
 
 export const onboarding = [
   {

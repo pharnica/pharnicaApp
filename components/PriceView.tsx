@@ -1,21 +1,16 @@
 import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import React, { useState } from "react";
 import axios from "axios";
-import useOrderStore from "@/store/orderStore";
 import { useUserData } from "@/context/UserContext";
 
-const PriceView = ({ price, orderId, setShowPriceView }: { 
-  price: number, 
-  setShowPriceView: React.Dispatch<React.SetStateAction<boolean>>, 
-  orderId: string 
-}) => {
-  const { selectedPharmacies } = useOrderStore();
+const PriceView = ({ price , orderPharmacyId }: { price: number , orderPharmacyId : string }) => {
+
+  const { userData } = useUserData();
   const [loadingAccept, setLoadingAccept] = useState(false);
   const [loadingDeny, setLoadingDeny] = useState(false);
-    const { userData } = useUserData();
+
 
   const handlePriceAccepting = async (Accept: boolean) => {
-    // Set the correct loading state based on which button was pressed
     if (Accept) {
       setLoadingAccept(true);
     } else {
@@ -24,39 +19,25 @@ const PriceView = ({ price, orderId, setShowPriceView }: {
 
     try {
 
-
-      const pharmacy = selectedPharmacies.find((pharmacy) => 
-        pharmacy.orderStatus === "ACCEPTED"
-      );
-
-      if (!pharmacy) {
-        throw new Error("No processing pharmacy found");
-      }
-
       const res = await axios.post(
         `${process.env.EXPO_PUBLIC_SERVER_SIDE_API}/api/orders/priceAccepting`,
         {
-          userId  : userData?.user_id,
-          orderId: orderId,
-          pharmacyId: pharmacy.id, 
-          Accept: Accept,
+          userId: userData?.user_id,
+          orderPharmacyId,
+          Accepted: true,
         }
       );
 
-      if (res.status == 200) {
-        setShowPriceView(false);
-      }
     } catch (error) {
       console.log(error);
     } finally {
-
       setLoadingAccept(false);
       setLoadingDeny(false);
     }
   };
 
   return (
-    <View className="bg-white rounded-2xl flex-col gap-6 p-5 w-full">
+    <View className="bg-white rounded-2xl flex-col gap-6 p-5 w-full border border-neutral-200">
       <View className="flex-col items-start flex-1">
         <Text className="font-PoppinsSemiBold">Total Price</Text>
         <Text className="font-Poppins text-xs text-gray-400 mt-1">
@@ -78,7 +59,7 @@ const PriceView = ({ price, orderId, setShowPriceView }: {
 
       <View className="flex flex-row items-center gap-4 mt-2">
         <TouchableOpacity
-          className="flex-1 flex items-center justify-center py-2 rounded-full border-[1.5px] border-[#22C55E]"
+          className="flex-1 flex items-center justify-center h-12 rounded-full border-[1.5px] border-[#22C55E]"
           onPress={() => handlePriceAccepting(false)}
           disabled={loadingDeny || loadingAccept}
         >
@@ -91,14 +72,16 @@ const PriceView = ({ price, orderId, setShowPriceView }: {
           )}
         </TouchableOpacity>
         <TouchableOpacity
-          className="flex-1 flex items-center justify-center py-2 rounded-full bg-[#22C55E] border-[1.5px] border-[#22C55E]"
+          className="flex-1 flex items-center justify-center h-12 rounded-full bg-[#22C55E] border-[1.5px] border-[#22C55E]"
           onPress={() => handlePriceAccepting(true)}
           disabled={loadingAccept || loadingDeny}
         >
           {loadingAccept ? (
             <ActivityIndicator size="small" color="white" />
           ) : (
-            <Text className="font-PoppinsMedium text-white pt-[2px]">Accept</Text>
+            <Text className="font-PoppinsMedium text-white pt-[2px]">
+              Accept
+            </Text>
           )}
         </TouchableOpacity>
       </View>

@@ -23,7 +23,7 @@ import {
 import { router, useNavigation } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "@/components/CustomButton";
-import ReactNativeModal from "react-native-modal";
+import Modal from "react-native-modal";
 import InputField from "@/components/InputField";
 import { useUserData } from "../../../context/UserContext";
 import BackwardHeader from "@/components/BackwardHeader";
@@ -37,10 +37,10 @@ interface LocationType {
 
 // Define Casablanca boundaries
 const CASABLANCA_BOUNDS = {
-  north: 33.6500, // maximum latitude
-  south: 33.4500, // minimum latitude
-  west: -7.7000,  // minimum longitude
-  east: -7.4500   // maximum longitude
+  north: 33.65,
+  south: 33.45,
+  west: -7.7,
+  east: -7.45,
 };
 
 const AddNewAddress = () => {
@@ -176,7 +176,7 @@ const AddNewAddress = () => {
     getAddressFromCoordinates(region.latitude, region.longitude);
     setLocationLatitude(region.latitude);
     setLocationLongitude(region.longitude);
-    
+
     // Check if the location is within Casablanca bounds
     const withinCasablanca = isInCasablanca(region.latitude, region.longitude);
     setIsInCasablancaArea(withinCasablanca);
@@ -283,126 +283,130 @@ const AddNewAddress = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 w-full bg-gray-100">
-      <View className="flex flex-row items-center justify-between absolute top-0 z-50 p-4 w-full">
-        <BackwardHeader
-          title="Add Delivery Location"
-          backTo={() => {
-            router.back();
-          }}
-        />
-        <TouchableOpacity
-          onPress={handleLocateMe}
-          style={tw`bg-white w-10 h-10 rounded-full items-center justify-center absolute right-2`}
-        >
-          {isLoading ? (
-                   <ActivityIndicator size="small" color="#22c55e" />
-                 ) : (
-                   <Image source={icons.GPS} style={tw`w-5 h-5`} />
-                 )}
-        </TouchableOpacity>
-      </View>
-
-      <MapView
-        ref={mapRef}
-        style={tw`w-full h-full`}
-        provider={PROVIDER_GOOGLE}
-        initialRegion={getInitialRegion()}
-        showsUserLocation={true}
-        showsMyLocationButton={false}
-        onRegionChangeComplete={handleRegionChange}
-        customMapStyle={customMapStyle}
-      ></MapView>
-
-      <View className="absolute top-1/2 left-1/2 -ml-6 -mt-12 z-10">
-        <Image source={icons.activepin} style={tw`w-12 h-12`} />
-      </View>
-
-      <View className="absolute bottom-4 left-4 right-4 bg-white p-5 rounded-3xl shadow-md z-10 gap-5">
-        <View className="flex flex-row items-center gap-3">
-          <View className="w-12 h-12 bg-green-500/30 flex items-center justify-center rounded-full">
-            <MapPinIcon color={"#22C55E"} size={26} />
-          </View>
-
-          {isGettingAddress || !locationAddress ? (
-            <View className="flex-row items-center justify-center">
-              <ActivityIndicator
-                size="small"
-                color="#0000ff"
-                className="mr-2"
-              />
-              <Text className="text-gray-600">Getting location name...</Text>
-            </View>
-          ) : (
-            <View className="flex-1">
-              <Text className="text-gray-800 font-PoppinsSemiBold flex-shrink">
-                {locationAddress}
-              </Text>
-              {!isInCasablancaArea && (
-                <Text className="text-red-500 font-PoppinsRegular text-sm mt-1">
-                  This area is not within our delivery zone (Casablanca only)
-                </Text>
-              )}
-            </View>
-          )}
+    <React.Fragment>
+      <View className="flex-1 w-full bg-gray-100">
+        <View className="flex flex-row items-center justify-between absolute top-0 z-50 p-4 w-full">
+          <BackwardHeader
+            title="Add Delivery Location"
+            backTo={() => {
+              router.back();
+            }}
+          />
+          <TouchableOpacity
+            onPress={handleLocateMe}
+            style={tw`bg-white w-10 h-10 rounded-full items-center justify-center absolute right-2`}
+          >
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#22c55e" />
+            ) : (
+              <Image source={icons.GPS} style={tw`w-5 h-5`} />
+            )}
+          </TouchableOpacity>
         </View>
 
-        <CustomButton
-          title={"Save this New address"}
-          onPress={() => {
-            setIsModalVisible(true);
-          }}
-          disabled={!isInCasablancaArea}
-          style={!isInCasablancaArea ? { opacity: 0.5 } : {}}
-        />
+        <MapView
+          ref={mapRef}
+          style={tw`w-full h-full`}
+          provider={PROVIDER_GOOGLE}
+          initialRegion={getInitialRegion()}
+          showsUserLocation={true}
+          showsMyLocationButton={false}
+          onRegionChangeComplete={handleRegionChange}
+          customMapStyle={customMapStyle}
+        ></MapView>
+
+        <View className="absolute top-1/2 left-1/2 -ml-6 -mt-12 z-10">
+          <Image source={icons.activepin} style={tw`w-12 h-12`} />
+        </View>
+
+        <View className="absolute bottom-4 left-4 right-4 bg-white p-5 rounded-3xl shadow-md z-10 gap-5">
+          <View className="flex flex-row items-center gap-3">
+            <View className="w-12 h-12 bg-green-500/30 flex items-center justify-center rounded-full">
+              <MapPinIcon color={"#22C55E"} size={26} />
+            </View>
+
+            {isGettingAddress || !locationAddress ? (
+              <View className="flex-row items-center justify-center">
+                <ActivityIndicator
+                  size="small"
+                  color="#0000ff"
+                  className="mr-2"
+                />
+                <Text className="text-gray-600">Getting location name...</Text>
+              </View>
+            ) : (
+              <View className="flex-1">
+                <Text className="text-gray-800 font-PoppinsSemiBold flex-shrink">
+                  {locationAddress}
+                </Text>
+                {!isInCasablancaArea && (
+                  <Text className="text-red-500 font-PoppinsRegular text-sm mt-1">
+                    This area is not within our delivery zone (Casablanca only)
+                  </Text>
+                )}
+              </View>
+            )}
+          </View>
+
+          <CustomButton
+            title={"Save this New address"}
+            onPress={() => {
+              setIsModalVisible(true);
+            }}
+            disabled={!isInCasablancaArea}
+            style={!isInCasablancaArea ? { opacity: 0.5 } : {}}
+          />
+        </View>
       </View>
 
-      <ReactNativeModal isVisible={isModalVisible} className="p-3">
-        {isLoadingModal && !succeded ? (
-          <View>
-            <ActivityIndicator />
-          </View>
-        ) : succeded ? (
-          <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
-            <Image
-              source={images.check}
-              style={tw`w-[110px] h-[110px] mx-auto my-5`}
-            />
-            <Text className="text-base text-gray-400 font-Poppins text-center mt-2">
-              You have successfully added new address
-            </Text>
-          </View>
-        ) : (
-          <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
-            <Text className="font-PoppinsExtraBold text-2xl mb-2">
-              Enter a title for this Address
-            </Text>
+      {isModalVisible && (
+        <Pressable className="z-50 bg-black/60 w-full h-full absolute top-0 left-0 flex items-center justify-center p-10" onPress={() => setIsModalVisible(false)}>
+          {isLoadingModal && !succeded ? (
+            <Pressable onPress={(e) => e.stopPropagation()}>
+              <ActivityIndicator />
+            </Pressable>
+          ) : succeded ? (
+            <Pressable onPress={(e) => e.stopPropagation()} className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
+              <Image
+                source={images.check}
+                style={tw`w-[110px] h-[110px] mx-auto my-5`}
+              />
+              <Text className="text-base text-gray-400 font-Poppins text-center mt-2">
+                You have successfully added new address
+              </Text>
+            </Pressable>
+          ) : (
+            <Pressable onPress={(e) => e.stopPropagation()} className="bg-white px-7 py-9 rounded-2xl min-h-[300px] w-full">
+              <Text className="font-PoppinsExtraBold text-2xl mb-2">
+                Enter a title for this Address
+              </Text>
 
-            <InputField
-              label="Address Title"
-              placeholder="Home , Office etc..."
-              onChangeText={(value) => {
-                setlocationTitle(value);
-              }}
-            />
+              <InputField
+                label="Address Title"
+                placeholder="Home , Office etc..."
+                onChangeText={(value) => {
+                  setlocationTitle(value);
+                }}
+              />
 
-            <CustomButton
-              isLoading={isLoading}
-              title="Save Address"
-              className="mt-5"
-              onPress={onPressSave}
-            />
+              <CustomButton
+                isLoading={isLoading}
+                title="Save Address"
+                className="mt-5 w-full"
+                onPress={onPressSave}
+              />
 
-            <TouchableOpacity
-              className="absolute top-3 right-3"
-              onPress={() => setIsModalVisible(false)}
-            >
-              <XMarkIcon size={22} color={"black"} />
-            </TouchableOpacity>
-          </View>
-        )}
-      </ReactNativeModal>
-    </SafeAreaView>
+              <TouchableOpacity
+                className="absolute top-3 right-3"
+                onPress={() => setIsModalVisible(false)}
+              >
+                <XMarkIcon size={20} color={"black"} />
+              </TouchableOpacity>
+            </Pressable>
+          )}
+        </Pressable>
+      )}
+    </React.Fragment>
   );
 };
 

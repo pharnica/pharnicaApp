@@ -45,7 +45,7 @@ declare interface InputFieldProps extends TextInputProps {
 export interface Pharmacy {
   id: string;
   address: string;
-  distance_km: number;
+  distance: number;
   latitude: number;
   longitude: number;
   name: string;

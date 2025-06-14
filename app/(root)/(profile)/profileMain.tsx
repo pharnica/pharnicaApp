@@ -5,7 +5,6 @@ import {
   StatusBar,
   ScrollView,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import {
   ArchiveBoxIcon as OrdersOutline,
   ChevronRightIcon,
@@ -21,9 +20,11 @@ import { useUserData } from "../../../context/UserContext";
 import { ReactNode, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { router } from "expo-router";
-import ReactNativeModal from "react-native-modal";
+import Modal from 'react-native-modal';
 import BackwardHeader from "@/components/BackwardHeader";
 import Toggle from "react-native-toggle-input";
+import React from "react";
+import useModalStore from "@/store/modal";
 
 type SettingItemProps = {
   icon: ReactNode;
@@ -38,6 +39,7 @@ type SettingItemProps = {
 
 export default function ProfileMain() {
   const { userData } = useUserData();
+  const { open, setOpen } = useModalStore();
   
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [isNotificationToggled, setIsNotificationToggled] = useState(false);
@@ -53,6 +55,7 @@ export default function ProfileMain() {
 
   const closeModal = () => {
     setIsModalVisible(false);
+    setOpen(false)
   };
 
   function maskPhoneNumber(phoneNumber: string | null | undefined): string {
@@ -71,7 +74,8 @@ export default function ProfileMain() {
   }
 
   return (
-    <SafeAreaView className="flex-1 py-3 px-4 gap-4 bg-white">
+    <React.Fragment>
+    <View className="flex-1 px-4 pt-2 gap-4 bg-white">
       <StatusBar
         animated
         backgroundColor="rgb(243 244 246)"
@@ -161,7 +165,7 @@ export default function ProfileMain() {
 
         <TouchableOpacity
           className="flex flex-row items-center justify-between py-4 pl-4 bg-red-600/10 border rounded-full border-red-500 mt-4"
-          onPress={() => setIsModalVisible(true)}
+          onPress={() => {setIsModalVisible(true); setOpen(true)}}
         >
           <View className="flex-row items-center gap-2">
             <View className="w-6">
@@ -174,10 +178,12 @@ export default function ProfileMain() {
         </TouchableOpacity>
       </ScrollView>
 
-      <ReactNativeModal
+      
+    </View>
+    <Modal 
         isVisible={isModalVisible}
         onBackdropPress={closeModal}
-        className="justify-center items-center p-3"
+        className="z-50 justify-center items-center p-3"
       >
         <View className="bg-white rounded-2xl p-6 w-full">
           <View className="items-center mb-4">
@@ -210,8 +216,8 @@ export default function ProfileMain() {
             </TouchableOpacity>
           </View>
         </View>
-      </ReactNativeModal>
-    </SafeAreaView>
+      </Modal>
+    </React.Fragment>
   );
 }
 

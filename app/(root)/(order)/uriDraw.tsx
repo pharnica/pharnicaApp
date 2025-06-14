@@ -4,11 +4,9 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
-  Modal,
   Button,
   TouchableNativeFeedback,
   Alert,
-  BackHandler,
 } from "react-native";
 import { Svg, Path as SvgPath, G, Image as SvgImage } from "react-native-svg";
 import { captureRef } from "react-native-view-shot";
@@ -31,8 +29,9 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faArrowLeft, faCheck } from "@fortawesome/free-solid-svg-icons";
 import tw from "twrnc";
-import ReactNativeModal from "react-native-modal";
+import Modal from "react-native-modal";
 import CustomButton from "@/components/CustomButton";
+import { router } from "expo-router";
 
 // Define types for the paths
 interface Point {
@@ -84,32 +83,33 @@ const DrawingComponent = ({
     setSelectedColor(hex);
   };
 
-  const backAction = useCallback(() => {
-    if (paths.length > 0) {  // More accurate condition
-      Alert.alert(
-        "Hold on!",
-        "Are you sure you want to go back and discard the order?",
-        [
-          { text: "Cancel", onPress: () => null, style: "cancel" },
-          { text: "Discard", onPress: () => setShowModalItSelf(false) }
-        ]
-      );
-    } else {
-      setShowModalItSelf(false);
-    }
-    return true; // Always prevent default back action
-  }, [paths.length, setShowModalItSelf]); // Proper dependencies
+  // const backAction = useCallback(() => {
+  //   if (paths.length > 0) {
+  //     Alert.alert(
+  //       "Hold on!",
+  //       "Are you sure you want to go back and discard the order?",
+  //       [
+  //         { text: "Cancel", onPress: () => null, style: "cancel" },
+  //         { text: "Discard", onPress: () => setShowModalItSelf(false) }
+  //       ]
+  //     );
+  //   } else {
+  //     setShowModalItSelf(false);
+  //   }
+  //   return true;
+  // }, [paths.length, setShowModalItSelf]);
 
   // Focus-aware implementation
-  useFocusEffect(
-    useCallback(() => {
-      const backHandler = BackHandler.addEventListener(
-        "hardwareBackPress",
-        backAction
-      );
-      return () => backHandler.remove();
-    }, [backAction])
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     const backHandler = BackHandler.addEventListener(
+  //       "hardwareBackPress",
+  //       backAction
+  //     );
+  //     return () => backHandler.remove();
+  //   }, [backAction])
+  // );
+
   const handleSave = async () => {
     try {
       if (!svgRef.current) return;
@@ -131,7 +131,7 @@ const DrawingComponent = ({
     <GestureHandlerRootView className="w-full h-full z-50">
       <SafeAreaView className="w-full h-full z-50 p-4 bg-gray-100 items-center gap-5">
         <View className="flex flex-row items-center justify-between w-[80%]">
-          <TouchableNativeFeedback onPress={backAction}>
+          <TouchableNativeFeedback onPress={()=>{router.back()}}>
             <View className="flex flex-col items-center justify-between gap-2 p-3 rounded-full">
               <FontAwesomeIcon icon={faArrowLeft} size={20} />
               <Text>Back</Text>
@@ -222,7 +222,7 @@ const DrawingComponent = ({
           </View>
         </View>
 
-        <ReactNativeModal isVisible={showModal}>
+        <Modal isVisible={showModal}>
           <View className="bg-white px-7 py-6 rounded-2xl min-h-[300px] items-center">
             <ColorPicker
               style={tw`w-[100%]`}
@@ -241,7 +241,7 @@ const DrawingComponent = ({
               />
             </ColorPicker>
           </View>
-        </ReactNativeModal>
+        </Modal>
 
       </SafeAreaView>
     </GestureHandlerRootView>

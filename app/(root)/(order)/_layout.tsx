@@ -16,16 +16,12 @@ export default function RootLayout() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="prescription_editing"
-          options={{ headerShown: false, animation: "slide_from_bottom" }}
-        />
-        <Stack.Screen
           name="prescriptions_list"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
           name="checkout"
-          options={{ headerShown: false, animation: "fade_from_bottom"}}
+          options={{ headerShown: false, animation: "slide_from_right"}}
         />
         <Stack.Screen
           name="specificPharmacySelection"
@@ -36,11 +32,7 @@ export default function RootLayout() {
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
-          name="orderDetails"
-          options={{ headerShown: false, animation: "slide_from_right" }}
-        />
-        <Stack.Screen
-          name="orderLiveTracking"
+          name="orderTracking"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
       </Stack>

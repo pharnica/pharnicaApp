@@ -27,13 +27,39 @@ import { icons } from "@/constants";
 import { useUserData } from "@/context/UserContext";
 import MedicalCategories from "@/components/MedicalCategories";
 import { MapPinIcon } from "react-native-heroicons/solid";
+import axios from "axios";
 
 const Home = () => {
+  
   const { userData, isLoading } = useUserData();
   const { open, setOpen } = useBottomSheetStore();
 
+  // const fetchActiveOrder = useCallback(async () => {
+  //   const res = await axios.get(
+  //     `${process.env.EXPO_PUBLIC_SERVER_SIDE_API}/api/orders/fetchUserActiveOrder`,
+  //     {
+  //       params: {
+  //         userId: userData?.user_id,
+  //       },
+  //     }
+  //   );
+
+  //   if (res.data.order) {
+  //     router.navigate({
+  //       pathname: "/(root)/(order)/orderDetails",
+  //       params: {
+  //         orderId: res.data.order[0].id,
+  //       },
+  //     });
+  //   }
+  // }, [userData]);
+
+  // useEffect(()=>{
+  //   fetchActiveOrder()
+  // },[userData])
+
   return (
-    <SafeAreaView className="flex-1 bg-gray-100 py-3 px-4">
+    <View className="flex-1 bg-gray-100 px-4 pt-4">
       <StatusBar
         animated
         backgroundColor="rgb(243 244 246)"
@@ -176,7 +202,7 @@ const Home = () => {
           </TouchableHighlight>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

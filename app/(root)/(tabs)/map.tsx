@@ -55,7 +55,7 @@ const MapScreen = () => {
         setLoading(true);
         // Replace this URL with your actual API endpoint
         const response = await axios.get(
-          `${process.env.EXPO_PUBLIC_SERVER_SIDE_API}/api/pharmacies`
+          `${process.env.EXPO_PUBLIC_SERVER_SIDE_API}/api/pharmacies/fetchPharmacies`
         );
 
         const transformedData = response.data.map((pharmacy: any) => ({

@@ -10,10 +10,11 @@ import { PhotoIcon } from "react-native-heroicons/outline";
 import { icons } from "@/constants";
 import { Image } from "expo-image";
 import { UserProvider } from "../../context/UserContext";
+import usePrescriptionStore from "@/store/prescriptionStore";
 
 const Layout = () => {
   const { open, setOpen } = useBottomSheetStore();
-  const { prescriptions, addPrescription } = useOrderStore();
+  const { prescriptions, addPrescription } = usePrescriptionStore();
   const snapPoints = ["30%"];
   const bottomSheetRef = useRef<BottomSheet>(null);
 

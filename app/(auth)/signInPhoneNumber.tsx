@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { ReactNativeModal } from "react-native-modal";
+import { Modal } from "react-native-modal";
 import { XMarkIcon } from "react-native-heroicons/outline";
 import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/InputField";
@@ -195,7 +195,7 @@ const SignIn = () => {
             </View>
           </View>
 
-          <ReactNativeModal
+          <Modal
             isVisible={verification.state === "pending"}
             onModalHide={() => {
               if (verification.state === "success") {
@@ -233,9 +233,9 @@ const SignIn = () => {
                 <XMarkIcon size={22} color={"black"} />
               </TouchableOpacity>
             </View>
-          </ReactNativeModal>
+          </Modal>
 
-          <ReactNativeModal isVisible={showSuccessModal}>
+          <Modal isVisible={showSuccessModal}>
             <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
               <Image
                 source={images.check}
@@ -253,7 +253,7 @@ const SignIn = () => {
                 className="mt-5"
               />
             </View>
-          </ReactNativeModal>
+          </Modal>
         </View>
       </ScrollView>
     </View>

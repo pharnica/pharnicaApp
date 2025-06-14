@@ -7,7 +7,6 @@ import {
   Alert,
   ActivityIndicator,
   ScrollView,
-  BackHandler,
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -22,7 +21,7 @@ import {
   TrashIcon,
 } from "react-native-heroicons/outline";
 import axios from "axios";
-import ReactNativeModal from "react-native-modal";
+import Modal from 'react-native-modal';
 import { images } from "@/constants";
 import { Image } from "expo-image";
 import tw from "twrnc";
@@ -30,6 +29,7 @@ import BackwardHeader from "@/components/BackwardHeader";
 import { useFocusEffect } from "@react-navigation/native";
 
 const DeliveryLocations = () => {
+
   const { From } = useLocalSearchParams();
 
   const navigation = useNavigation();
@@ -149,53 +149,53 @@ const DeliveryLocations = () => {
     }
   };
 
-  const handleGoBack = useCallback(
-    (from?: any) => {
-      const hasSelectedAddress = userData?.delivery_locations?.some(
-        (location: any) => location.isSelected
-      );
+  // const handleGoBack = useCallback(
+  //   (from?: any) => {
+  //     const hasSelectedAddress = userData?.delivery_locations?.some(
+  //       (location: any) => location.isSelected
+  //     );
 
-      if (!hasSelectedAddress) {
-        Alert.alert("Warning", "Please select an address location first");
-        return true;
-      }
+  //     if (!hasSelectedAddress) {
+  //       Alert.alert("Warning", "Please select an address location first");
+  //       return true;
+  //     }
 
-      if (!from) {
-        router.back();
-        return false;
-      }
+  //     if (!from) {
+  //       router.back();
+  //       return false;
+  //     }
 
-      switch (from) {
-        case "Home":
-          router.replace("/(root)/(tabs)/(home)/home");
-          break;
-        case "Profile":
-          router.replace("/(root)/(profile)/profileMain");
-          break;
-        case "Order":
-          router.replace("/(root)/(order)/checkout");
-          break;
-        default:
-          router.replace("/(root)/(tabs)/(home)/home");
-      }
-      return false;
-    },
-    [userData]
-  );
+  //     switch (from) {
+  //       case "Home":
+  //         router.replace("/(root)/(tabs)/(home)/home");
+  //         break;
+  //       case "Profile":
+  //         router.replace("/(root)/(profile)/profileMain");
+  //         break;
+  //       case "Order":
+  //         router.replace("/(root)/(order)/checkout");
+  //         break;
+  //       default:
+  //         router.replace("/(root)/(tabs)/(home)/home");
+  //     }
+  //     return false;
+  //   },
+  //   [userData]
+  // );
 
-  useFocusEffect(
-    useCallback(() => {
-      const backHandler = BackHandler.addEventListener(
-        "hardwareBackPress",
-        () => {
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     const backHandler = BackHandler.addEventListener(
+  //       "hardwareBackPress",
+  //       () => {
          
-          return handleGoBack(From);
-        }
-      );
+  //         return handleGoBack(From);
+  //       }
+  //     );
       
-      return () => backHandler.remove();
-    }, [handleGoBack, From])
-  );
+  //     return () => backHandler.remove();
+  //   }, [handleGoBack, From])
+  // );
 
   if (locationsLoading) {
     return (
@@ -206,7 +206,7 @@ const DeliveryLocations = () => {
   }
 
   return (
-    <SafeAreaView className="flex-1 items-center bg-gray-100 py-3 px-4">
+    <View className="flex-1 items-center bg-gray-100 pt-2 px-4">
       <StatusBar
         animated
         backgroundColor="rgb(243 244 246)"
@@ -215,7 +215,7 @@ const DeliveryLocations = () => {
 
       <View className="w-full mb-6 flex flex-row items-center">
 
-        <BackwardHeader title="Delivery Addresses" backTo={()=>{handleGoBack(From)}} />
+        <BackwardHeader title="Delivery Addresses" backTo={()=>{router.back()}} />
 
         
         {userData && userData?.delivery_locations?.length > 0 && (
@@ -295,7 +295,7 @@ const DeliveryLocations = () => {
       )}
 
       {/* Success Modal */}
-      <ReactNativeModal
+      <Modal
         isVisible={isSuccessModalVisible}
         className="p-3"
         onBackdropPress={() => setIsSuccessModalVisible(false)}
@@ -311,8 +311,8 @@ const DeliveryLocations = () => {
             Selected address updated successfully.
           </Text>
         </View>
-      </ReactNativeModal>
-    </SafeAreaView>
+      </Modal>
+    </View>
   );
 };
 

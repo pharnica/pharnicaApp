@@ -24,11 +24,12 @@ import { router } from "expo-router";
 import useBottomSheetStore from "@/store/bottomSheet";
 import CustomButton from "@/components/CustomButton";
 import tw from "twrnc";
+import usePrescriptionStore from "@/store/prescriptionStore";
 
 const PrescriptionList = () => {
   const { open, setOpen } = useBottomSheetStore();
   const navigation = useNavigation();
-  const { prescriptions, popPrescriptions, currentPrescIndex } = useOrderStore();
+  const { prescriptions, popPrescriptions, currentPrescIndex } = usePrescriptionStore();
 
   const backAction = useCallback(() => {
     Alert.alert(
@@ -59,7 +60,7 @@ const PrescriptionList = () => {
     }, [backAction])
   );
   return (
-    <SafeAreaView className="flex-1 w-full bg-gray-100 py-4 px-4">
+    <View className="flex-1 w-full bg-gray-100 py-4 px-4">
       <StatusBar
         animated
         backgroundColor="rgb(243 244 246)"
@@ -138,7 +139,7 @@ const PrescriptionList = () => {
           </View>
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

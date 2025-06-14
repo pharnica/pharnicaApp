@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import tw from "twrnc";
 import axios from "axios";
-import * as SecureStore from "expo-secure-store";
 import { MagnifyingGlassIcon, XMarkIcon } from "react-native-heroicons/outline";
 import PharmacieProfileChat from "@/components/PharmacieProfileChat";
 import { useSocketContext } from "@/context/SocketContext";
@@ -47,54 +46,56 @@ const Chat = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredConversations, setFilteredConversations] = useState<Conversation[]>([]);
   const [conversations, setConversations] = useState<Conversation[]>([]);
-    const { userData } = useUserData();
-  
+  const { userData } = useUserData();
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { socket, isConnected } = useSocketContext();
-
 
   // Socket.IO event listeners
   useEffect(() => {
     if (!socket || !isConnected || !userData?.user_id) return;
 
     const handleNewMessage = (newMessage: LastMessage) => {
-      setConversations(prevConversations => {
-
+      setConversations((prevConversations) => {
         const existingConvIndex = prevConversations.findIndex(
-          conv => conv.id === newMessage.conversationId
+          (conv) => conv.id === newMessage.conversationId
         );
 
+        let updatedConversations;
         if (existingConvIndex >= 0) {
           // Update existing conversation
-          const updatedConversations = [...prevConversations];
+          updatedConversations = [...prevConversations];
           const updatedConversation = {
             ...updatedConversations[existingConvIndex],
             lastMessage: newMessage,
             updatedAt: new Date().toISOString(),
-            unreadCount: newMessage.senderType === "PHARMACY" && !newMessage.isRead
-              ? updatedConversations[existingConvIndex].unreadCount + 1
-              : updatedConversations[existingConvIndex].unreadCount
+            unreadCount:
+              newMessage.senderType === "PHARMACY" && !newMessage.isRead
+                ? updatedConversations[existingConvIndex].unreadCount + 1
+                : updatedConversations[existingConvIndex].unreadCount,
           };
 
           // Move to top
           updatedConversations.splice(existingConvIndex, 1);
-          return [updatedConversation, ...updatedConversations];
+          updatedConversations = [updatedConversation, ...updatedConversations];
         } else {
-          // New conversation - we'll need to fetch the full details
-          fetchConversations();
+          // Trigger fetch for new conversation
+          fetchConversations(true);
           return prevConversations;
         }
+
+        return updatedConversations;
       });
     };
 
     const handleMessageRead = ({ conversationId }: { conversationId: string }) => {
-      setConversations(prev => prev.map(conv => 
-        conv.id === conversationId 
-          ? { ...conv, unreadCount: 0 } 
-          : conv
-      ));
+      setConversations((prev) => {
+        const updated = prev.map((conv) =>
+          conv.id === conversationId ? { ...conv, unreadCount: 0 } : conv
+        );
+        return updated;
+      });
     };
 
     socket.on("newMessage", handleNewMessage);
@@ -107,41 +108,42 @@ const Chat = () => {
   }, [socket, isConnected, userData?.user_id]);
 
   // Fetch conversations with loading and error states
-  const fetchConversations = useCallback(async () => {
+  const fetchConversations = useCallback(
+    async (forceFetch = false) => {
+      if (!userData?.user_id) return;
 
-    if (!userData?.user_id) return;
-    
-    try {
-      setIsLoading(true);
-      setError(null);
-      
-      const response = await axios.get(
-        `${process.env.EXPO_PUBLIC_SERVER_SIDE_API}/api/messages/fetchConversations`,
-        {
-          params: { userId : userData?.user_id },
-          timeout: 10000,
-        }
-      );
+      try {
+        setIsLoading(true);
+        setError(null);
 
-      // Sort by most recent first
-      const sortedConversations = (response?.data || []).sort((a: Conversation, b: Conversation) => 
-        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-      );
+        const response = await axios.get(
+          `${process.env.EXPO_PUBLIC_SERVER_SIDE_API}/api/messages/fetchConversations`,
+          {
+            params: { userId: userData?.user_id },
+            timeout: 10000,
+          }
+        );
 
-      setConversations(sortedConversations);
-      setFilteredConversations(sortedConversations);
+        // Sort by most recent first
+        const sortedConversations = (response?.data || []).sort(
+          (a: Conversation, b: Conversation) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        );
 
-      
-    } catch (err) {
-      console.error("Failed to fetch conversations:", err);
-      setError("Failed to load conversations. Please try again.");
-    } finally {
-      setIsLoading(false);
-      setIsRefreshing(false);
-    }
-  }, [userData?.user_id]);
+        setConversations(sortedConversations);
+        setFilteredConversations(sortedConversations);
+      } catch (err) {
+        console.error("Failed to fetch conversations:", err);
+        setError("Failed to load conversations. Please try again.");
+      } finally {
+        setIsLoading(false);
+        setIsRefreshing(false);
+      }
+    },
+    [userData?.user_id, isRefreshing]
+  );
 
-  // Initial load and refresh when userId changes
+  // Initial load
   useEffect(() => {
     fetchConversations();
   }, [userData?.user_id, fetchConversations]);
@@ -149,7 +151,7 @@ const Chat = () => {
   // Handle pull-to-refresh
   const handleRefresh = useCallback(() => {
     setIsRefreshing(true);
-    fetchConversations();
+    fetchConversations(true); // Force fetch on refresh
   }, [fetchConversations]);
 
   // Filter conversations based on search query
@@ -177,7 +179,7 @@ const Chat = () => {
       <SafeAreaView style={tw`flex-1 justify-center items-center bg-gray-100 px-4`}>
         <Text style={tw`text-red-500 font-PoppinsMedium text-lg mb-4`}>{error}</Text>
         <TouchableOpacity
-          onPress={fetchConversations}
+          onPress={() => fetchConversations(true)}
           style={tw`bg-blue-500 px-6 py-3 rounded-full`}
         >
           <Text style={tw`text-white font-PoppinsMedium`}>Retry</Text>
@@ -188,14 +190,9 @@ const Chat = () => {
 
   return (
     <SafeAreaView style={tw`flex-1 bg-gray-100`}>
-      <StatusBar
-        animated
-        backgroundColor="rgb(243 244 246)"
-        barStyle="dark-content"
-      />
+      <StatusBar animated backgroundColor="rgb(243 244 246)" barStyle="dark-content" />
 
       <View style={tw`px-4 py-5 flex flex-col gap-5`}>
-
         <View className="w-full">
           <Text className="font-PoppinsMedium text-2xl pl-1">Chats</Text>
           {!isConnected && (
@@ -210,7 +207,7 @@ const Chat = () => {
           <View className="flex flex-row justify-start items-center gap-3.5 flex-1">
             <MagnifyingGlassIcon size={22} color="black" strokeWidth={1.6} />
             <TextInput
-              className="font-Montserrat tracking-tight text-[#888888] flex-1 "
+              className="font-Montserrat tracking-tight text-[#888888] flex-1"
               placeholder="Search pharmacies..."
               placeholderTextColor="#b0b0b0"
               value={searchQuery}

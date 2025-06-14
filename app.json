@@ -4,7 +4,7 @@
     "slug": "pharnica",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/AppLogo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -16,16 +16,11 @@
       "supportsTablet": true
     },
     "android": {
-      "statusBar": {
-        "translucent": false
-      },
-      "navigationBar": {
-        "translucent": false
-      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.zack2004.pharnica"
     },
     "web": {
       "bundler": "metro",
@@ -37,7 +32,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/AppLogo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"

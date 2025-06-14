@@ -51,6 +51,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     
     try {
       const userId1 = await SecureStore.getItemAsync("user");
+    
       
       if (!userId1) {
         return ;
@@ -65,15 +66,20 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await axios.get(
         `${process.env.EXPO_PUBLIC_SERVER_SIDE_API}/api/users/fetchUser/${userId}`
       );
+
+      
       
       if (!response.data?.user) {
         throw new Error("Invalid user data response");
       }
       
       setUserData(response.data.user);
+
     } catch (error : any) {
+
       console.error("Error refetching user data:", error);
       setError(error.message || "Failed to fetch user data");
+      
     } finally {
       setIsLoading(false);
     }
